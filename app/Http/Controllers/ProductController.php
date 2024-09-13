@@ -115,8 +115,12 @@ class ProductController extends Controller
                 
                 // 新しい画像パスを保存
                 $product->img_path = $img_path;
+               
+
                 
             }
+
+            $product->comment = $request->input('comment');
     
             // 商品情報の更新処理
             $product->update($request->validated());

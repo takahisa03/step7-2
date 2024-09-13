@@ -30,6 +30,7 @@ class ProductRequest extends FormRequest
             'stock' => 'required|numeric',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',  // 画像のバリデーション
             'company_id' => 'required',  // 会社選択のバリデーション
+            'comment' => 'nullable|max:255', // 追加
         ];
 
       
