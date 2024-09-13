@@ -89,6 +89,7 @@ class ProductController extends Controller
      public function update(ProductRequest $request, $id) {
         DB::beginTransaction();
         try {
+            
             // 商品をIDで検索
             $product = Product::findOrFail($id);
     

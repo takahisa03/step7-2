@@ -28,8 +28,8 @@ class ProductRequest extends FormRequest
             'name' => 'required|max:25',
             'price' => 'required|numeric',
             'stock' => 'required|numeric',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // 画像のバリデーション
-            'company_id' => 'required', // 会社選択のバリデーション
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',  // 画像のバリデーション
+            'company_id' => 'required',  // 会社選択のバリデーション
         ];
 
         // 新規登録時（POSTメソッド）の場合は画像を必須にする
