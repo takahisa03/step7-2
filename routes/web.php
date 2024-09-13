@@ -41,7 +41,7 @@ Route::get('/edit_show/{id}', [ProductController::class, 'showEdit'])->name('sho
 // 編集画面表示
 Route::get('/products/{id}/edit', [ProductController::class, 'edit'])->name('products.edit'); 
 // 更新処理
-Route::post('/products/update/{id}', [ProductController::class, 'update'])->name('products.update');
+Route::post('/update/{id}', [ProductController::class, 'update'])->name('products.update');
 //削除機能
 Route::post('/delete/{id}', [ProductController::class, 'delete'])->name('delete'); 
 //検索機能

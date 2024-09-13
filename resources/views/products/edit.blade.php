@@ -42,7 +42,21 @@
     </div>
     @error('name')
         <div class="error">{{ $message }}</div>
+        @enderror
+
+        <div>
+    <label for="company_id">メーカー名<span style="color: red;">*</span></label>
+    <select class="p-2 w-100 form-select" name="company_id">
+        
+        @foreach($companies as $company)
+        <option value="{{ $company->id }}">{{ $company->company_name }}</option>
+        @endforeach
+    </select>
+    @error('company_id')
+        <div class="error">{{ $message }}</div>
     @enderror
+
+</div>
 
     <div>
         <label>価格 <span style="color: red;">*</span></label>

@@ -42,21 +42,19 @@ class Product extends Model
 
     //更新処理
     // テーブルの中身の変更or登録の処理のみモデルに書く
-    public function updateProduct($product, $request, $img_path = null) {
+    public function updateProduct($product, $request, $img_path, $id) {
         $product->product_name = $request->name;
         $product->price = $request->price;
         $product->stock = $request->stock;
         $product->comment = $request->comment;
-    
-        // 新しい画像パスがある場合のみ更新
-        if ($img_path) {
-            $product->img_path = $img_path;
-        }
+        $product->img_path = $img_path;
+
     
         $product->save(); // データベースに保存
     }
     
-
+    
+    
     
 
     //削除処理

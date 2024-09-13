@@ -32,10 +32,7 @@ class ProductRequest extends FormRequest
             'company_id' => 'required',  // 会社選択のバリデーション
         ];
 
-        // 新規登録時（POSTメソッド）の場合は画像を必須にする
-        if ($this->isMethod('post')) {
-            $rules['image'] = 'required|' . $rules['image'];
-        }
+      
 
         return $rules;
     }
@@ -55,7 +52,6 @@ class ProductRequest extends FormRequest
             'price.numeric' => '商品価格は数字で入力して下さい。',
             'stock.required' => '在庫数を入力して下さい。',
             'stock.numeric' => '在庫数は数字で入力して下さい。',
-            'image.required' => '商品画像をアップロードして下さい。',
             'image.image' => 'アップロードできるファイルは画像のみです。',
             'image.mimes' => '画像はjpeg, png, jpg, gif形式でアップロードしてください。',
             'image.max' => '画像のサイズは2MB以下にしてください。',

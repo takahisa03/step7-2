@@ -31,6 +31,10 @@ class ProductController extends Controller
             'companies' => $companies,
         ]);
     }
+    
+    
+    
+
 
     //show.bladeの表示をしてid情報を数字毎に表示させる
     public function show($id){
@@ -41,52 +45,56 @@ class ProductController extends Controller
         ]);
     }
     //編集画面移行
-    public function showEdit($id){
+    public function showEdit($id) {
         $product = Product::find($id);
+        $companies = Company::all(); // すべてのメーカー情報を取得
         return view('products.edit')->with([
             'product' => $product,
+            'companies' => $companies, // ここで$companiesをビューに渡す
         ]);
-
     }
 
     // 編集画面の表示
     public function edit($id)
     {
         $product = Product::findOrFail($id); // IDで商品を取得、見つからなければ404エラー
-        return view('products.edit', compact('product')); // 編集画面に商品データを渡す
+        $companies = Company::all(); // すべてのメーカーを取得
+
+        return view('products.edit', compact('product', 'companies')); // 編集画面に商品データを渡す
     }
 
 
    //新規登録機能
-   public function create(ProductRequest $request)
-   {
+   public function create(ProductRequest $request){
        DB::beginTransaction();
        try {
            $product = new Product();
-   
+           
            if ($request->hasFile('image')) {
                $image = $request->file('image');
                $imageName = $image->getClientOriginalName();
                $image->storeAs('public/images', $imageName);
                $img_path = 'storage/images/' . $imageName;
                $product->img_path = $img_path;
-           }
-   
-           $product->createProduct($request, $img_path ?? null); // 画像がない場合はnull
-           DB::commit();
-       } catch (Exception $e) {
-           DB::rollBack();
-           return redirect(route('show.create'))->with('error', '商品登録に失敗しました。');
-       }
-   
-       return redirect()->route('products.index');
-   }
-   
+            }
+            
+            $product->createProduct($request, $img_path ?? null); // 画像がない場合はnull
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            return redirect(route('show.create'))->with('error', '商品登録に失敗しました。');
+        }
+        
+        return redirect()->route('products.index');
+    }
+    
+    
+    
+    // 更新処理
+    
+    public function update(ProductRequest $request, $id) {
+         
 
- 
-     // 更新処理
-     
-     public function update(ProductRequest $request, $id) {
         DB::beginTransaction();
         try {
             
@@ -96,18 +104,18 @@ class ProductController extends Controller
             // 画像がアップロードされている場合の処理
             if ($request->hasFile('image')) {
                 $image = $request->file('image');
-                dd($image);
                 $imageName = $image->getClientOriginalName();
                 $image->storeAs('public/images', $imageName);
                 $img_path = 'storage/images/' . $imageName;
-    
+                
                 // 古い画像が存在する場合は削除
                 if (File::exists(public_path($product->img_path))) {
                     File::delete(public_path($product->img_path));
                 }
-    
+                
                 // 新しい画像パスを保存
                 $product->img_path = $img_path;
+                
             }
     
             // 商品情報の更新処理
