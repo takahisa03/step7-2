@@ -32,6 +32,7 @@
     <form action="{{ route('products.update', $product->id) }}" method="post" enctype="multipart/form-data">
     @csrf
     
+    
     <div>
         <label><strong>ID</strong></label>
         <span>{{ $product->id }}</span>

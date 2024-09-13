@@ -85,6 +85,7 @@ class ProductController extends Controller
 
  
      // 更新処理
+     
      public function update(ProductRequest $request, $id) {
         DB::beginTransaction();
         try {
