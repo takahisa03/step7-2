@@ -30,62 +30,66 @@
 <body>
     <h1>商品情報編集画面</h1>
     <form action="{{ route('products.update', $product->id) }}" method="post" enctype="multipart/form-data">
-        
-        @csrf
-        
-        <div>
-            <label><strong>ID</strong></label>
-            <span>{{ $product->id }}</span>
-        </div>
-        <div>
-            <label>商品名 <span style="color: red;">*</span></label>
-            <input type="text" name="name" value="{{ $product->product_name }}">
-        </div>
+    @csrf
+    
+    <div>
+        <label><strong>ID</strong></label>
+        <span>{{ $product->id }}</span>
+    </div>
+    <div>
+        <label>商品名 <span style="color: red;">*</span></label>
+        <input type="text" name="name" value="{{ $product->product_name }}">
+    </div>
+    @error('name')
+        <div class="error">{{ $message }}</div>
+    @enderror
 
-            @error('name')
-                <div class="error">{{ $message }}</div>
-            @enderror
-        
-        <div>
-            <label>価格 <span style="color: red;">*</span></label>
-            <input type="number" name="price" value="{{ $product->price }}" >
-        </div>
-        <div>
-            <label>在庫数 <span style="color: red;">*</span></label>
-            <input type="number" name="stock"  value="{{ $product->stock }}">
-        </div>
-        <div>
-            <label>コメント</label>
-            <textarea name="comment">{{ $product->comment }}</textarea>
-        </div>
+    <div>
+        <label>価格 <span style="color: red;">*</span></label>
+        <input type="number" name="price" value="{{ $product->price }}">
+    </div>
+    @error('price')
+        <div class="error">{{ $message }}</div>
+    @enderror
 
-        <!-- 現在の画像表示 -->
-        <div>
-    <label>現在の画像</label>
-    @if($product->img_path)
-        <img src="{{ asset($product->img_path) }}" alt="商品画像" style="max-width: 200px;">
-    @else
-        <p>画像はありません</p>
-    @endif
-</div>
+    <div>
+        <label>在庫数 <span style="color: red;">*</span></label>
+        <input type="number" name="stock" value="{{ $product->stock }}">
+    </div>
+    @error('stock')
+        <div class="error">{{ $message }}</div>
+    @enderror
 
+    <div>
+        <label>コメント</label>
+        <textarea name="comment">{{ $product->comment }}</textarea>
+    </div>
 
-        <!-- 新しい画像アップロード -->
-        <div>
-            <label for="image">新しい商品画像</label>
-            <input type="file" id="image" name="image">
+    <!-- 現在の画像表示 -->
+    <div>
+        <label>現在の画像</label>
+        @if($product->img_path)
+            <img src="{{ asset($product->img_path) }}" alt="商品画像" style="max-width: 200px;">
+        @else
+            <p>画像はありません</p>
+        @endif
+    </div>
 
+    <!-- 新しい画像アップロード -->
+    <div>
+        <label for="image">新しい商品画像</label>
+        <input type="file" id="image" name="image">
+        @error('image')
+            <div class="error">{{ $message }}</div>
+        @enderror
+    </div>
 
-            @error('image')
-                <div class="error">{{ $message }}</div>
-            @enderror
-        </div>
-        
-        <div class="actions">
-            <button type="submit">更新</button>
-            <a href="{{ route('products.index') }}"><button type="button">戻る</button></a>
-        </div>
-    </form>
+    <div class="actions">
+        <button type="submit">更新</button>
+        <a href="{{ route('products.index') }}"><button type="button">戻る</button></a>
+    </div>
+</form>
+
 </body>
 </html>
 </html>

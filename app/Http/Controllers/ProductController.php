@@ -86,43 +86,39 @@ class ProductController extends Controller
  
      // 更新処理
      public function update(ProductRequest $request, $id) {
-        // トランザクション実行
         DB::beginTransaction();
         try {
             // 商品をIDで検索
-            $product = Product::find($id);
+            $product = Product::findOrFail($id);
     
-            // 現在の画像パスを保持
-            $oldImagePath = $product->img_path;
-            $img_path = null;
-            // 画像がアップロードされているか確認
+            // 画像がアップロードされている場合の処理
             if ($request->hasFile('image')) {
-                // 新しい画像をアップロード
                 $image = $request->file('image');
+                dd($image);
                 $imageName = $image->getClientOriginalName();
                 $image->storeAs('public/images', $imageName);
                 $img_path = 'storage/images/' . $imageName;
-                
-                // 古い画像を削除
-                if (File::exists(public_path($oldImagePath))) {
-                    File::delete(public_path($oldImagePath));
+    
+                // 古い画像が存在する場合は削除
+                if (File::exists(public_path($product->img_path))) {
+                    File::delete(public_path($product->img_path));
                 }
+    
+                // 新しい画像パスを保存
+                $product->img_path = $img_path;
             }
-   
     
             // 商品情報の更新処理
-            $product->updateProduct($product, $request, $img_path);
+            $product->update($request->validated());
             DB::commit();
     
+            return redirect()->route('products.index')->with('success', '商品情報を更新しました。');
         } catch (Exception $e) {
-            // エラー時にロールバック
             DB::rollBack();
             return redirect(route('show.edit', $id))->with('error', '商品更新に失敗しました。');
         }
-    
-        // 更新完了後、商品一覧ページにリダイレクト
-        return redirect()->route('products.index');
     }
+    
     
     
 
@@ -182,7 +178,9 @@ class ProductController extends Controller
         ]);
     }
     
-   
+    
+
+    
        
           
     
