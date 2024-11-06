@@ -148,57 +148,107 @@ class ProductController extends Controller
 
      //削除処理
      public function delete($id){
-         //トランザクション実行
-         DB::beginTransaction();
-         try {
-             $product = Product::find($id);
-             $product->deleteProduct($product, $id);
-             DB::commit();
-
-       } catch (Exception $e) {
-        return redirect()->route('products.index');
-       }
-
-       return redirect()->route('products.index');
-
-     }
-
-    //検索機能
-    public function search(Request $request)
-    {
-        // クエリビルダの初期化
-        $query = Product::query();
-    
-        // キーワードで検索
-        if ($request->filled('keyword')) {
-            $query->where('product_name', 'LIKE', "%{$request->keyword}%");
+        DB::beginTransaction();
+        try {
+            $product = Product::find($id);
+            $product->delete();
+            DB::commit();
+            return response()->json(['success' => true, 'message' => '商品が削除されました']);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json(['success' => false, 'message' => '削除に失敗しました'], 500);
         }
-    
-        // 会社名で検索
-        if ($request->filled('company')) {
-            $query->join('companies', 'products.company_id', '=', 'companies.id')
-                  ->where('companies.company_name', $request->company);
-        }
-    
-        // クエリを実行して結果を取得
-        $products = $query->get();
-    
-        // 全ての会社情報を取得
-        $companies = Company::all();
-    
-        return view('products.index')->with([
-            'companies' => $companies,
-            'products' => $products,
-        ]);
     }
     
+
+    public function search(Request $request) {
+        $query = Product::query()->with('company'); // companyと連結
+    
+        // 商品名検索
+        if ($request->name_search) {
+            $query->where('product_name', 'LIKE', '%' . $request->name_search . '%');
+        }
+    
+        // 会社名検索
+        if ($request->company_search) {
+            $query->whereHas('company', function($q) use ($request) {
+                $q->where('company_name', $request->company_search);
+            });
+        }
+    
+        // 価格・在庫数フィルタ
+        if ($request->price_min) {
+            $query->where('price', '>=', $request->price_min);
+        }
+        if ($request->price_max) {
+            $query->where('price', '<=', $request->price_max);
+        }
+        if ($request->stock_min) {
+            $query->where('stock', '>=', $request->stock_min);
+        }
+        if ($request->stock_max) {
+            $query->where('stock', '<=', $request->stock_max);
+        }
+    
+        // ソート処理
+        if ($request->sort_column && $request->sort_order) {
+            if ($request->sort_column === 'company_name') {
+                $query->join('companies', 'products.company_id', '=', 'companies.id')
+                      ->orderBy('companies.company_name', $request->sort_order);
+            } else {
+                $query->orderBy($request->sort_column, $request->sort_order);
+            }
+        } else {
+            // 初期ソート: IDの昇順
+            $query->orderBy('id', 'asc');
+        }
+    
+        $products = $query->select('products.*')->get(); // join使用時にproducts.*を明示
+    
+        return response()->json($products);
+    }
+    
+     
+     
+
+ 
+    public function searchStock(Request $request)
+    {
+        $stockMin = $request->get('stock_min', 0); // 最小在庫数
+        $stockMax = $request->get('stock_max', null); // 最大在庫数が指定されていない場合はnull
+
+        // 在庫数でフィルタリング
+        $query = Product::query();
+        
+        if ($stockMin !== null) {
+            $query->where('stock', '>=', $stockMin);
+        }
+        
+        if ($stockMax !== null) {
+            $query->where('stock', '<=', $stockMax);
+        }
+
+        $products = $query->get();
+
+        return response()->json($products); // 結果をJSONで返す
+
+        \Log::info('searchStock endpoint accessed');
+    \Log::info('Request parameters:', $request->all());
+    
+    // 検索ロジック
+    }
+     
+
+    
+}
+
     
 
     
        
           
     
-}
+
 
 
      
@@ -209,10 +259,4 @@ class ProductController extends Controller
 //もし検索キーワードで検索したら検索キーワードのみ表示 company_name実行でcompany_nameのみ表示
 //$request->keywordがnullじゃない場合は検索キーワードは実行する
 //もしcompanyがnull
-
-
-
-
-
-
 
