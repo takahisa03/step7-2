@@ -147,18 +147,22 @@ class ProductController extends Controller
      //5.ルーティングの「->name()」を参照してビューにリダイレクトする処理
 
      //削除処理
-     public function delete($id){
-        DB::beginTransaction();
-        try {
-            $product = Product::find($id);
-            $product->delete();
-            DB::commit();
-            return response()->json(['success' => true, 'message' => '商品が削除されました']);
-        } catch (Exception $e) {
-            DB::rollBack();
-            return response()->json(['success' => false, 'message' => '削除に失敗しました'], 500);
-        }
+     public function delete($id)
+{
+    DB::beginTransaction();
+    try {
+        $product = Product::findOrFail($id);
+        $product->delete();
+        DB::commit();
+        return response()->json(['success' => '商品が削除されました']);
+    } catch (Exception $e) {
+        DB::rollBack();
+        return response()->json(['error' => '削除に失敗しました'], 500);
     }
+}
+
+     
+    
     
 
     public function search(Request $request) {

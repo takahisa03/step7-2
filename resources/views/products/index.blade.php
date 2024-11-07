@@ -112,14 +112,11 @@
             <td>{{ $product->stock }}</td>
             <td>{{ $product->company->company_name }}</td>
             <td class="actions">
-                <a href="{{ route('show', $product->id) }}">詳細</a>
-                <form method="post" action="{{ route('delete', $product->id) }}">
-                    @csrf
-                    <button type="button" class="delete-button" data-id="{{ $product->id }}">削除</button>
-                </form>
-                <!-- 購入ボタン追加 -->
-                <button type="button" class="purchase-button" data-id="{{ $product->id }}" data-price="{{ $product->price }}">購入</button>
+            <a href="{{ route('show', $product->id) }}">詳細</a>
+            <button type="button" class="delete-button" data-id="{{ $product->id }}">削除</button>
+            <button type="button" class="purchase-button" data-id="{{ $product->id }}" data-price="{{ $product->price }}">購入</button>
             </td>
+
         </tr>
         @endforeach
     </tbody>
