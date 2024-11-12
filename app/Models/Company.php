@@ -8,7 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Company extends Model
 {
     use HasFactory;
-    public function product(){
-        return $this->hasMany('App\Models\Product');
+
+    // productsテーブルとの関連付け
+    public function products()
+    {
+        return $this->hasMany(Product::class);
     }
 }

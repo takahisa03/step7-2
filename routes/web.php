@@ -43,8 +43,7 @@ Route::get('/products/{id}/edit', [ProductController::class, 'edit'])->name('pro
 // 更新処理
 Route::post('/update/{id}', [ProductController::class, 'update'])->name('products.update');
 //削除機能
-Route::post('/delete/{id}', [ProductController::class, 'delete'])->name('delete'); 
-
+Route::delete('/delete/{id}', [ProductController::class, 'delete'])->name('product.delete');
 //検索機能
 Route::get('/search', [ProductController::class, 'search'])->name('search');
 

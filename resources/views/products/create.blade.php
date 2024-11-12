@@ -73,19 +73,16 @@
         </div>
 
         <div>
-            <label for="price">会社<span class="text-danger">*</span></label>
-            <!-- selectはプルダウン -->
+            <label for="company_id">会社<span class="text-danger">*</span></label>
             <select class="p-2 w-100 form-select" name="company_id">
-            <option value="" selected disabled>選択してください</option> <!-- 空白のオプションを追加 -->
+                <option value="" selected disabled>選択してください</option>
                 @foreach($companies as $company)
-                <option value="{{ $company->id }}">{{ $company->company_name }}</option>
+                    <option value="{{ $company->id }}">{{ $company->company_name }}</option>
                 @endforeach
-                
             </select>
             @error('company_id')
                 <div class="error">{{ $message }}</div>
             @enderror
- 
         </div>
 
         <div>
@@ -97,13 +94,12 @@
         </div>
 
         <div>
-        <label for="image">商品画像</label>
-        <input type="file" id="image" name="image">
-        @error('image')
-            <div class="error">{{ $message }}</div>
-        @enderror
-    </div>
-
+            <label for="image">商品画像</label>
+            <input type="file" id="image" name="image">
+            @error('image')
+                <div class="error">{{ $message }}</div>
+            @enderror
+        </div>
 
         <div>
             <button type="submit">新規登録</button>

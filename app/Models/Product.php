@@ -10,57 +10,49 @@ class Product extends Model
 {
     use HasFactory;
 
-    //companiesテーブルとの関連付け（リレーション）
-    public function company(){
-        return $this->belongsTo('App\Models\Company');
-    }
-
-
-    //これいらんかも、いや必要でした。
     protected $fillable = [
         'product_name',
         'price',
         'company_id',
         'stock',
         'comment',
+        'img_path',
     ];
-    //登録処理
-    // テーブルの中身の変更or登録の処理のみモデルに書く
-    public function createProduct($request, $img_path){
-        
-        DB::table('products')->insert([
-           'product_name' => $request->name,
-           'price' => $request->price,
-           'stock' => $request->stock,
-           'comment' => $request->comment,
-           'company_id' => $request->company_id,
-           'img_path' => $img_path,
 
+    // 会社とのリレーション
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
+    }
 
+    // 商品登録処理
+    public static function createProduct($request, $img_path)
+    {
+        return Product::create([
+            'product_name' => $request->name,
+            'price' => $request->price,
+            'stock' => $request->stock,
+            'comment' => $request->comment,
+            'company_id' => $request->company_id,
+            'img_path' => $img_path,
         ]);
     }
 
-    //更新処理
-    // テーブルの中身の変更or登録の処理のみモデルに書く
-    public function updateProduct($product, $request, $img_path, $id) {
-        $product->product_name = $request->name;
-        $product->price = $request->price;
-        $product->stock = $request->stock;
-        $product->comment = $request->comment;
-        $product->img_path = $img_path;
-
-    
-        $product->save(); // データベースに保存
+    // 商品更新処理
+    public static function updateProduct($product, $request, $img_path)
+    {
+        $product->update([
+            'product_name' => $request->name,
+            'price' => $request->price,
+            'stock' => $request->stock,
+            'comment' => $request->comment,
+            'img_path' => $img_path,
+        ]);
     }
-    
-    
-    
-    
 
-    //削除処理
-    public function deleteProduct($product, $id){
-
-        $product->destroy($id);
-
+    // 商品削除処理
+    public static function deleteProduct($id)
+    {
+        return Product::destroy($id);
     }
 }
